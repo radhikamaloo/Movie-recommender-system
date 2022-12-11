@@ -1,0 +1,30 @@
+**report outline - Movie Recommendation System**
+
+0] Report document in prescribed format min 7-8 pages
+1] Cover page with title
+2] Description
+3] Diagram representing work flow
+4] Input screen shots
+5] Output screen shots
+6] AWS (prefered), VirtualBox, MS Azure, VM Ware
+7] Application Web HTTP server + Small Application  
+8] or any cloud based application
+9] Demo or Q&A
+
+
+**rough description**
+used cosine similarity to make a movie reccomendation prediction model from a dataset of 4804 movies from themoviedb.org 
+
+made a web app using flask to display the results of the model
+
+deployed the flask app on an render.com instance
+
+**Project Description**
+
+1] TITLE: Movie Recommendation System
+
+2] DESCRIPTION:
+
+The project is a movie recommendation system that uses the cosine similarity algorithm to recommend movies based on the similarity of the movie's genre, cast, director, and keywords. The dataset used for this project is from themoviedb.org. The dataset contains 5000 movies and 26 features. The features used for this project are the movie's genre, cast, director, and keywords. The dataset was cleaned and preprocessed to remove any missing values and to convert the features into a format that can be used by the cosine similarity algorithm.
+
+A web app was made using flask to display the results of the model. The web app takes in a movie title as input and displays the top 10 recommended movies. The web app was deployed on an render.com instance.

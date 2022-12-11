@@ -3,7 +3,7 @@ from flask import Flask, request, send_file, make_response
 import requests
 import json
 
-def fetch_poster(movie_id):
+def get_poster_url(movie_id):
     url = "https://api.themoviedb.org/3/movie/{}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US".format(movie_id)
     data = requests.get(url)
     data = data.json()
@@ -19,7 +19,7 @@ def recommend(movie):
     for i in distances[1:6]:
         # fetch the movie poster
         movie_id = movies.iloc[i[0]].movie_id
-        recommended_movie_posters.append(fetch_poster(movie_id))
+        recommended_movie_posters.append(get_poster_url(movie_id))
         recommended_movie_names.append(movies.iloc[i[0]].title)
 
     return recommended_movie_names,recommended_movie_posters
