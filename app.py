@@ -1,6 +1,7 @@
 import pickle
-import streamlit as st
+from flask import Flask, request, send_file, make_response
 import requests
+import json
 
 def fetch_poster(movie_id):
     url = "https://api.themoviedb.org/3/movie/{}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US".format(movie_id)
@@ -24,32 +25,25 @@ def recommend(movie):
     return recommended_movie_names,recommended_movie_posters
 
 
-st.header('Movie Recommender System')
 movies = pickle.load(open('model/movie_list.pkl','rb'))
 similarity = pickle.load(open('model/similarity.pkl','rb'))
 
 movie_list = movies['title'].values
-selected_movie = st.selectbox(
-    "Type or select a movie from the dropdown",
-    movie_list
-)
 
-if st.button('Show Recommendation'):
-    recommended_movie_names,recommended_movie_posters = recommend(selected_movie)
-    col1, col2, col3, col4, col5 = st.beta_columns(5)
-    with col1:
-        st.text(recommended_movie_names[0])
-        st.image(recommended_movie_posters[0])
-    with col2:
-        st.text(recommended_movie_names[1])
-        st.image(recommended_movie_posters[1])
 
-    with col3:
-        st.text(recommended_movie_names[2])
-        st.image(recommended_movie_posters[2])
-    with col4:
-        st.text(recommended_movie_names[3])
-        st.image(recommended_movie_posters[3])
-    with col5:
-        st.text(recommended_movie_names[4])
-        st.image(recommended_movie_posters[4])
+app = Flask(__name__)
+
+@app.get('/')
+def home():
+    return send_file('index.html')
+
+@app.get('/movies')
+def movie():
+    return make_response(json.dumps(movie_list.tolist()), 200)
+
+@app.post('/recommend')
+def recommend_movie():
+    movie = request.json['movie']
+    recommended_movie_names,recommended_movie_posters = recommend(movie)
+    reccomendation = zip(recommended_movie_names,recommended_movie_posters)
+    return make_response([{ 'title': movie, 'poster': poster } for movie, poster in reccomendation], 200)

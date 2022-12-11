@@ -1,0 +1,144 @@
+<!-- st.header('Movie Recommender System')
+selected_movie = st.selectbox(
+    "Type or select a movie from the dropdown",
+    movie_list
+)
+
+if st.button('Show Recommendation'):
+    recommended_movie_names,recommended_movie_posters = recommend(selected_movie)
+    col1, col2, col3, col4, col5 = st.beta_columns(5)
+    with col1:
+        st.text(recommended_movie_names[0])
+        st.image(recommended_movie_posters[0])
+    with col2:
+        st.text(recommended_movie_names[1])
+        st.image(recommended_movie_posters[1])
+
+    with col3:
+        st.text(recommended_movie_names[2])
+        st.image(recommended_movie_posters[2])
+    with col4:
+        st.text(recommended_movie_names[3])
+        st.image(recommended_movie_posters[3])
+    with col5:
+        st.text(recommended_movie_names[4])
+        st.image(recommended_movie_posters[4]) -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Movie Recommender System</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		.row {
+			display: flex;
+			flex-wrap: wrap;
+			margin-right: -15px;
+			margin-left: -15px;
+		}
+
+		#results {
+			margin-top: 20px;
+			display: flex;
+			justify-content: space-between;
+		}
+	</style>
+</head>
+
+<body onload="getMovies()">
+	<!-- <h1 class="text-center">Movie Recommender System</h1> -->
+	<!-- cooler title hearder with nice font and background on the line below -->
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="page-header">
+					<h1 class="text-center">Movie Recommender System</h1>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container ">
+		<div id="selector" class="row">
+			<div>
+				<div class="form-group">
+					<label for="movie">
+						<h2>Select a movie</h2>
+					</label>
+					<select onchange="getRecommendations()" class="form-control" id="movie">
+						<option selected hidden>Choose...</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<template id="movie-template">
+			<div class="col-md-2">
+				<div class="card" style="width: 10rem;">
+					<img src="" class="card-img-top" alt="...">
+					<div class="card-body">
+						<p class="card-text"></p>
+					</div>
+				</div>
+			</div>
+		</template>
+		<div class="row" id="results">
+		</div>
+	</div>
+	<script>
+		function getMovies() {
+			fetch('/movies')
+				.then(res => res.json())
+				.then(data => {
+					const movieSelect = document.getElementById('movie');
+					data.forEach(movie => {
+						const option = document.createElement('option');
+						option.value = movie;
+						option.innerText = movie;
+						movieSelect.appendChild(option);
+					});
+				});
+		}
+
+		function getRecommendations() {
+			const movieSelect = document.getElementById('movie');
+			const movie = movieSelect.value;
+			fetch('/recommend', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					movie: movie
+				})
+			})
+				.then(res => res.json())
+				.then(data => {
+					const movieTemplate = document.getElementById('movie-template');
+					const movieContainer = document.querySelector('#results');
+					movieContainer.innerHTML = '';
+					data.forEach(movie => {
+						const movieElement = movieTemplate.content.cloneNode(true);
+						movieElement.querySelector('img').src = movie.poster;
+						movieElement.querySelector('p').innerText = movie.title;
+						movieContainer.appendChild(movieElement);
+					});
+				});
+		}
+
+	</script>
+</body>
+
+</html>
